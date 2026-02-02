@@ -48,7 +48,7 @@ uvicorn main:app --reload
 
 - Interactive docs: `http://localhost:8000/docs`
 
-## Run frontend server (client)
+### 5) Run frontend server (client)
 Go to `frontend/` and run in a new terminal :
 
 ```bash

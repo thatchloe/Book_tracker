@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Book Tracker</h1>
+
+        <!-- Search -->
+        <div class="card">
+            <h2>Search Books</h2>
+            <div class="row">
+                <input type="text" id="searchInput" placeholder="Search books...">
+                <button id="searchBtn">Search</button>
+            </div>
+            <div id="searchResults"></div>
+        </div>
+
+        <!-- Add Book Form -->
+        <div class="card">
+            <h2>Add Book</h2>
+            <form id="bookForm">
+                <input type="text" id="isbn" placeholder="ISBN (optional)">
+                
+                <input type="text" id="title" placeholder="Title *" required>
+                <span class="error" id="titleError"></span>
+                
+                <input type="text" id="author" placeholder="Author *" required>
+                <span class="error" id="authorError"></span>
+                
+                <input type="number" id="year" placeholder="Year (max 2026)">
+                <span class="error" id="yearError"></span>
+                
+                <div class="row">
+                    <button type="submit">Save Book</button>
+                    <button type="button" id="clearBtn">Clear</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Books List -->
+        <div class="card">
+            <h2>My Books</h2>
+            
+            <div class="filters">
+                <button class="filter active" data-filter="all">All books</button>
+            </div>
+
+            <div id="booksList"></div>
+            <div id="empty" class="hidden">No books yet!</div>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+    <script src="app.js"></script>
+</body>
+</html>

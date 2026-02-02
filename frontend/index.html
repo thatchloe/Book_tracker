@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Book Tracker</h1>
+        </header>
+
+        <main>
+            <!-- Search Section -->
+            <section class="search-section">
+                <h2>Search Books</h2>
+                <div class="search-box">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Enter book title, author, or ISBN..."
+                        autocomplete="off"
+                    >
+                    <button id="searchBtn">Search</button>
+                </div>
+                <div id="searchError" class="error-message"></div>
+                <div id="searchResults" class="search-results"></div>
+            </section>
+
+            <!-- Add Book Form -->
+            <div class="card">
+                <h2>Add Book</h2>
+                <form id="bookForm">
+                    <input type="text" id="isbn" placeholder="ISBN (optional)">
+                    
+                    <input type="text" id="title" placeholder="Title *" required>
+                    <span class="error" id="titleError"></span>
+                    
+                    <input type="text" id="author" placeholder="Author *" required>
+                    <span class="error" id="authorError"></span>
+                    
+                    <input type="number" id="publicationYear" placeholder="Year (max 2026)">
+                    <span class="error" id="yearError"></span>
+                    
+                    <div class="row">
+                        <button type="submit">Save Book</button>
+                        <button type="button" id="clearBtn">Clear</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Books Section -->
+            <section class="books-section">
+                <h2>My Books</h2>
+            
+                <div class="book-filters">
+                    <button id="listbooksBtn" class="filter-btn" data-filter="all">All books</button>
+                    <button class="filter-btn" data-filter="Pending">Pending</button>
+                    <button class="filter-btn" data-filter="Read">Read</button>
+                </div>
+
+                <!-- Empty state message -->
+                <div id="emptyState" class="no-results" style="display:none;">
+                    No books to display.
+                </div>
+
+                <!-- Container to render books -->
+                <div id="booksList" class="books-list">
+                    <!-- Books will appear here when clicking "All books" -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

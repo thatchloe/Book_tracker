@@ -22,7 +22,7 @@ source venv/bin/activate
 
 ### 2) Installation
 
-## For backend
+
 ```bash
 pip install -r requirements.txt
 ```

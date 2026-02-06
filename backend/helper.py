@@ -1,5 +1,5 @@
 from typing import List
-from models import SearchResult
+from schemas import SearchResult
 
 
 def extract_data(data: dict) -> List[dict]:

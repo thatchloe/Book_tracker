@@ -7,10 +7,6 @@ const searchError = document.getElementById('searchError');
 const searchResults = document.getElementById('searchResults');
 
 // Save form elements
-const isbnInput = document.getElementById('isbnInput');
-const titleInput = document.getElementById('titleInput');
-const authorInput = document.getElementById('authorInput');
-const yearInput = document.getElementById('yearInput');
 const saveBookBtn = document.getElementById('saveBookBtn');
 const listbooksBtn = document.getElementById('listbooksBtn');
 const booksList = document.getElementById('booksList'); 
@@ -32,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
+    
     if (saveBookBtn) {
         saveBookBtn.addEventListener('click', () => {
             addBook();
@@ -44,15 +40,11 @@ document.addEventListener('DOMContentLoaded', () => {
         listbooksBtn.addEventListener('click', () => {
             loadBooks();
         });
-    }
+    }  
 });
 
-function populateSaveForm(book) {
-    isbnInput.value = book.isbn || '';
-    titleInput.value = book.title || '';
-    authorInput.value = book.author || '';
-    yearInput.value = book.publication_year || '';
-}
+
+
 
 
 // Search Books
@@ -83,39 +75,64 @@ async function handleSearch() {
     }
 }
 
-function displaySearchResults(results) {
+function selectBook(book) {
+    document.getElementById('isbn').value = book.isbn;
+    document.getElementById('title').value = book.title;
+    document.getElementById('author').value = book.author;
+    document.getElementById('year').value = book.publication_year;
+ }
+
+ function displaySearchResults(results) {
     if (results.length === 0) {
         searchResults.innerHTML = '<p class="empty-state">No books found. Try a different search.</p>';
         return;
     }
     
-    searchResults.innerHTML = results.map(book => `
+    searchResults.innerHTML = results.map((book, index) => `
         <div class="search-result-item">
             <h3>${escapeHtml(book.title)}</h3>
             <p><strong>Author:</strong> ${escapeHtml(book.author || 'Unknown')}</p>
             ${book.publication_year ? `<p><strong>Year:</strong> ${book.publication_year}</p>` : ''}
             ${book.isbn ? `<p><strong>ISBN:</strong> ${escapeHtml(book.isbn)}</p>` : ''}
-            <button class="add-btn" onclick="populateSaveForm(${JSON.stringify(book)})">
+            <button class="add-btn" data-index="${index}">
                 Use this book
             </button>
         </div>
     `).join('');
+    
+    // Add event listeners after rendering
+    document.querySelectorAll('.search-result-item .add-btn').forEach((button, index) => {
+        button.addEventListener('click', () => selectBook(results[index]));
+    });
 }
 
 // Add Book
-async function addBook(bookData) {
+async function addBook() {
+    const data = {
+        isbn: document.getElementById('isbn').value.trim(),
+        title: document.getElementById('title').value.trim(),
+        author: document.getElementById('author').value.trim(),
+        publication_year: parseInt(document.getElementById('year').value)
+    };
+    
+    // Validation
+    if (!data.title || !data.author) {
+        alert('Title and Author are required');
+        return;
+    }
+    
+    if (!data.publication_year || data.publication_year > 2026) {
+        alert('Publication Year must be a valid number and cannot be greater than 2026');
+        return;
+    }
+    
     try {
-        const response = await fetch(`${API_BASE_URL}/books/save`, {
+        const response = await fetch(`${API_BASE_URL}/books/save`, { 
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                isbn: bookData.isbn,
-                title: bookData.title,
-                author: bookData.author,
-                publication_year: bookData.publication_year
-            })
+            body: JSON.stringify(data)
         });
         
         if (!response.ok) {
@@ -125,16 +142,16 @@ async function addBook(bookData) {
         
         // Clear search and reload books
         searchInput.value = '';
-        searchResults.innerHTML = ''
+        searchResults.innerHTML = '';  
         
         // Show success message (optional)
         alert('Book added successfully!');
+        loadBooks();
     } catch (error) {
         console.error('Add book error:', error);
-        alert(`Failed to add book: ${error.message}`);
+        alert(`Failed to add book: ${error.message}`); 
     }
 }
-
 // Load Books
 async function loadBooks() {
     if (!booksList) return;
@@ -250,13 +267,4 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-function showSaveError(message) {
-    if (!saveError) return;
-    saveError.textContent = message;
-    saveError.classList.add('show');
-}
 
-function hideSaveError() {
-    if (!saveError) return;
-    saveError.classList.remove('show');
-}

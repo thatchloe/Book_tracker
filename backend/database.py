@@ -5,7 +5,8 @@ Handles all database connections and CRUD operations.
 
 import sqlite3
 from typing import Optional, List
-from models import Book, BookForm
+from models import BookDB
+from schemas import BookCreate
 from contextlib import contextmanager
 
 
@@ -13,13 +14,11 @@ class Database:
     """SQLite3 database manager."""
 
     def __init__(self, db_name: str = "books.db"):
-        """Initialize database connection."""
         self.db_name = db_name
         self.init_db()
 
     @contextmanager
     def get_connection(self):
-        """Context manager for database connections."""
         conn = sqlite3.connect(self.db_name)
         conn.row_factory = sqlite3.Row
         try:
@@ -28,7 +27,6 @@ class Database:
             conn.close()
 
     def init_db(self) -> None:
-        """Initialize database schema."""
         with self.get_connection() as conn:
             conn.execute(
                 """
@@ -44,8 +42,8 @@ class Database:
             )
             conn.commit()
 
-    def save_book(self, book_data: 'BookForm') -> Book:
-        """Create a new book with initial status 'Pending'."""
+    # CREATE
+    def save_book(self, book_data: BookCreate) -> BookDB:
         with self.get_connection() as conn:
             cursor = conn.execute(
                 """
@@ -53,60 +51,56 @@ class Database:
                 VALUES (?, ?, ?, ?, 'Pending')
                 """,
                 (
-                book_data.isbn,
-                book_data.title,
-                book_data.author,
-                book_data.publication_year
-                )
+                    book_data.isbn,
+                    book_data.title,
+                    book_data.author,
+                    book_data.publication_year,
+                ),
             )
             book_id = cursor.lastrowid
             conn.commit()
 
-            # Fetch and return the created book
             row = conn.execute(
                 "SELECT * FROM books WHERE id = ?", (book_id,)
             ).fetchone()
 
             return self._row_to_book(row)
 
-    def get_all_books(self) -> List[Book]:
-        """Get all books ordered by ID."""
+    # READ ALL
+    def get_all_books(self) -> List[BookDB]:
         with self.get_connection() as conn:
-            rows = conn.execute(
-                "SELECT * FROM books ORDER BY id"
-            ).fetchall()
-
+            rows = conn.execute("SELECT * FROM books ORDER BY id").fetchall()
             return [self._row_to_book(row) for row in rows]
 
-    def get_book_by_id(self, book_id: int) -> Optional[Book]:
-        """Get a book by ID."""
+    # READ ONE
+    def get_book_by_id(self, book_id: int) -> Optional[BookDB]:
         with self.get_connection() as conn:
             row = conn.execute(
                 "SELECT * FROM books WHERE id = ?", (book_id,)
             ).fetchone()
-
             return self._row_to_book(row) if row else None
 
-    def update_book(self, book_id: int) -> Optional[Book]:
-        """Update book status from Pending to Read."""
+    # UPDATE (status change only)
+    def update_book(self, book_id: int) -> Optional[BookDB]:
         with self.get_connection() as conn:
             cursor = conn.cursor()
-            
-            # Directly update status to Read if current status is Pending
-            cursor.execute("""
+            cursor.execute(
+                """
                 UPDATE books 
                 SET status = 'Read'
                 WHERE id = ? AND status = 'Pending'
-            """, (book_id,))
-            
+                """,
+                (book_id,),
+            )
+
             conn.commit()
             if cursor.rowcount == 0:
                 return None
-            # Return updated book
+
             return self.get_book_by_id(book_id)
 
+    # DELETE
     def delete_book(self, book_id: int) -> bool:
-        """Delete a book."""
         with self.get_connection() as conn:
             cursor = conn.execute(
                 "DELETE FROM books WHERE id = ?", (book_id,)
@@ -114,9 +108,9 @@ class Database:
             conn.commit()
             return cursor.rowcount > 0
 
-    def _row_to_book(self, row: sqlite3.Row) -> Book:
-        """Convert database row to Book object."""
-        return Book(
+    # Convert DB row → internal model
+    def _row_to_book(self, row: sqlite3.Row) -> BookDB:
+        return BookDB(
             id=row["id"],
             isbn=row["isbn"],
             title=row["title"],

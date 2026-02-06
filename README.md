@@ -60,4 +60,8 @@ Then open:
 
 - `http://localhost:5173`
 
-
+Some books names to test out:
+ - Flowers
+ - Google
+ - Switch
+ - Twilight

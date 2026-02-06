@@ -29,53 +29,40 @@
                 <div id="searchResults" class="search-results"></div>
             </section>
 
-            <!-- Add Book Form -->
-            <div class="card">
-                <h2>Add Book</h2>
-                <form id="bookForm">
-                    <input type="text" id="isbn" placeholder="ISBN (optional)">
-                    
-                    <input type="text" id="title" placeholder="Title *" required>
-                    <span class="error" id="titleError"></span>
-                    
-                    <input type="text" id="author" placeholder="Author *" required>
-                    <span class="error" id="authorError"></span>
-                    
-                    <input type="number" id="publicationYear" placeholder="Year (max 2026)">
-                    <span class="error" id="yearError"></span>
-                    
-                    <div class="row">
-                        <button type="submit">Save Book</button>
-                        <button type="button" id="clearBtn">Clear</button>
-                    </div>
-                </form>
+             <!-- Add Book Form -->
+        <div class="card">
+            <h2>Add Book</h2>
+            <form>
+                <input type="text" id="isbn" placeholder="ISBN (optional)">
+                
+                <input type="text" id="title" placeholder="Title *" required>
+                <span class="error" id="titleError"></span>
+                
+                <input type="text" id="author" placeholder="Author *" required>
+                <span class="error" id="authorError"></span>
+                
+                <input type="number" id="year" placeholder="Year (max 2026)">
+                <span class="error" id="yearError"></span>
+                
+                <div class="row">
+                    <button id="saveBookBtn" type="submit">Save Book</button>
+                </div>
+            </form>
+        </div>
+        <!--Books Section-->
+        <section class="books-section">
+            <h2>My Books</h2>
+        
+            <div class="book-filters">
+                <button id="listbooksBtn" class="books-list">All books</button>
             </div>
-
-            <!-- Books Section -->
-            <section class="books-section">
-                <h2>My Books</h2>
-            
-                <div class="book-filters">
-                    <button id="listbooksBtn" class="filter-btn" data-filter="all">All books</button>
-                    <button class="filter-btn" data-filter="Pending">Pending</button>
-                    <button class="filter-btn" data-filter="Read">Read</button>
-                </div>
-
-                <!-- Empty state message -->
-                <div id="emptyState" class="no-results" style="display:none;">
-                    No books to display.
-                </div>
-
-                <!-- Container to render books -->
-                <div id="booksList" class="books-list">
-                    <!-- Books will appear here when clicking "All books" -->
-                </div>
-            </section>
+            <!-- Container to render books -->
+            <div id="booksList" class="books-list">
+            <!-- Books will appear here when clicking "All books" -->
+            </div>
+        </section>
         </main>
     </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="toast"></div>
 
     <script src="app.js"></script>
 </body>

@@ -67,8 +67,8 @@ Some books names to test out:
  - Twilight
 
 Productionization:
-Migrate to larger database.
-Implement pagination: Handle large collections
-Containerize: Dockerfile and docker compose
-Add tests: Unit and integration tests
-Add early bug catch and refactoring tools: Pylint, mypy, black, etc
+- Migrate to larger database.
+- Implement pagination: Handle large collections
+- Containerize: Dockerfile and docker compose
+- Add tests: Unit and integration tests
+- Add early bug catch and refactoring tools: Pylint, mypy, black, etc
